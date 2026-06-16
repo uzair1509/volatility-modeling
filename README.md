@@ -34,10 +34,10 @@ yfinance
 ## Visualisations
 
 ### Closing price over time
-![Nifty 50 Close Price](results/close_price_chart.png)
+![Nifty 50 Close Price](Results/close_price_chart.png)
 
 ### Daily log returns
-![Nifty 50 Log Returns](results/log_return_plot.png)
+![Nifty 50 Log Returns](Results/log_return_plot.png)
 
 ### Return distribution
-![Nifty 50 Return Histogram](results/log_return_histogram.png)
+![Nifty 50 Return Histogram](Results/log_return_histogram.png)
