@@ -15,5 +15,6 @@ Once again log returns are utilized due to their additive effect and symmetry. S
 
 
 ## Key Findings
-As observed and expected in the pre-COVID period, all rolling volatilities 
+As observed and expected in the pre-COVID period, all rolling volatilities:
+![Volatility Over The Decade](Results/nifty_decade_rolling_sd.png)
 
