@@ -1,4 +1,4 @@
-## NSEI-Price-Movement-Tracking
+## NSEI Price Movement Tracking
 Tracking the movement of prices on the Index of National Stock Exchange of India over a decade (2015-2026)
 
 A foundational project, the first of many leading to the creating of a GARCH model to explore volatility and its influencing factors of the NIFTY 50 Index.
