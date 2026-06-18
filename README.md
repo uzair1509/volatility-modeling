@@ -1,3 +1,4 @@
+
 # Rolling_Standard_Deviation
 Computing and observing rolling standard deviations of NIFTY 50 Close prices over a decade with rolling periods of 10, 20 and 60 days. Visual and calculation emphasis is put on the COVID-19 period and its effect on price volatilty.
 
@@ -15,6 +16,6 @@ Once again log returns are utilized due to their additive effect and symmetry. S
 
 
 ## Key Findings
-As observed and expected in the pre-COVID period, all rolling volatilities:
+As observed and expected in the pre-COVID period, all rolling volatilities remain stable with no drastic changes 
 ![Volatility Over The Decade](Results/nifty_decade_rolling_sd.png)
 
