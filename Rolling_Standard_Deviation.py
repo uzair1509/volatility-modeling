@@ -1,76 +1,62 @@
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 import yfinance as yf
-from arch import arch_model
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 import warnings
-
 warnings.filterwarnings('ignore')
 
-nifty = yf.download('^NSEI', start='2015-01-01', end='2026-01-01')
-nifty['log_returns'] = 100 * (np.log(nifty['Close'] / nifty['Close'].shift(1)))
-returns = nifty['log_returns'].dropna()
-
-test_orders = [(1, 1), (1, 2), (2, 1), (2, 2)]
-results = []
-
-for p, q in test_orders:
-    model = arch_model(returns, vol='GARCH', p=p, q=q, mean='Constant', dist='normal')
-    res = model.fit(disp='off')
-    results.append(
-        {
-            'p': p,
-            'q': q,
-            'AIC': res.aic,
-            'BIC': res.bic,
-            'omega': res.params['omega'],
-            'alpha': res.params['alpha[1]'],
-            'beta': res.params['beta[1]'],
-            'mean': res.params['mu'],
-        }
-    )
-
-comp_df = pd.DataFrame(results)
-comp_df = comp_df.sort_values(by=['AIC', 'BIC']).reset_index(drop=True)
-print(comp_df)
-
-best_aic = comp_df.loc[comp_df['AIC'].idxmin()]
-best_bic = comp_df.loc[comp_df['BIC'].idxmin()]
-
-print(f"\nBest by AIC: GARCH({int(best_aic['p'])},{int(best_aic['q'])}) with AIC:{best_aic['AIC']:.2f}")
-print(f"\nBest by BIC: GARCH({int(best_bic['p'])},{int(best_bic['q'])}) with BIC: {best_bic['BIC']:.2f}")
-
-final_model = arch_model(returns, vol='GARCH', p=1, q=1, mean='Constant', dist='normal')
-res = final_model.fit(disp='off')
-
-alpha = res.params['alpha[1]']
-beta = res.params['beta[1]']
-persistence = alpha + beta
-half_life = np.log(0.5) / np.log(persistence) if persistence < 1 else np.inf
-
-cond_vol = res.conditional_volatility
-
+#data download
+nifty = yf.download('^NSEI', start='2015-01-01', end='2026-01-01', progress=False)
+#clean
+if isinstance(nifty.columns, pd.MultiIndex):
+    nifty.columns = nifty.columns.droplevel(1)
 nifty = nifty.dropna()
-nifty['cond_vol'] = np.nan
-nifty.loc[cond_vol.index, 'cond_vol'] = cond_vol
+#compute log returns
+nifty['log_return'] = 100 * np.log(nifty['Close']/nifty['Close'].shift(1))
+nifty = nifty.dropna()
+#compute rolling standard deviation (volatility)
+nifty['vol_10d'] = nifty['log_return'].rolling(10).std()
+nifty['vol_20d'] = nifty['log_return'].rolling(20).std()
+nifty['vol_60d'] = nifty['log_return'].rolling(60).std()
+nifty = nifty.dropna()
 
-nifty['20_rolling_SD'] = nifty['log_returns'].rolling(20).std()
+#baseline: unconditional volatility before COVID
+pre_covid_returns = nifty.loc[:'2020-02-15', 'log_return']
+baseline_vol = pre_covid_returns.std()
 
-fig, axes = plt.subplots(2, 1, figsize=(14, 9), sharex=True)
+#plot 1: price chart
+plt.figure(figsize=(12, 4))
+plt.plot(nifty.index, nifty['Close'], color='steelblue')
+plt.title('Nifty 50 Close Price')
+plt.ylabel('Index Value')
+plt.xlabel('Date')
+plt.tight_layout()
+plt.show()
 
-axes[0].plot(nifty.index, nifty['log_returns'], linewidth=0.3, color='gray')
-axes[0].set_ylabel('Daily return (%)')
-axes[0].set_title('Nifty 50 Daily Log Returns')
-axes[0].axhline(y=0, color='black', linestyle='-', linewidth=0.5)
+#plot 2: rolling volatility with baseline
+plt.figure(figsize=(12, 5))
+plt.plot(nifty.index, nifty['vol_10d'], label='10-day rolling volatility', linewidth=0.8)
+plt.plot(nifty.index, nifty['vol_20d'], label='20-day rolling volatility', linewidth=0.8)
+plt.plot(nifty.index, nifty['vol_60d'], label='60-day rolling volatility', linewidth=1.2)
+plt.axhline(y=baseline_vol, color='black', linestyle='--', linewidth=1, label=f'Pre-COVID unconditional vol ({baseline_vol:.2f}%)')
+plt.title('Rolling Volatility at Different Window Lengths')
+plt.ylabel('Percentage Volatility')
+plt.xlabel('Date')
+plt.legend()
+plt.tight_layout()
+plt.show()
 
-axes[1].plot(nifty.index, nifty['20_rolling_SD'], linewidth=1.0,
-             color='steelblue', alpha=0.8, label='20 day rolling vol')
-axes[1].plot(nifty.index, nifty['cond_vol'], linewidth=1.0,
-             color='darkred', alpha=0.9, label='GARCH(1,1) conditional vol')
-axes[1].set_ylabel('Volatility / %')
-axes[1].set_xlabel('Date')
-axes[1].set_title('GARCH(1,1) Conditional Volatility vs 20 Day rolling SD')
-axes[1].legend()
+#plot 3: covid zoom with baseline
+covid_window = nifty.loc['2019-10-01':'2021-01-01']
 
+plt.figure(figsize=(12, 5))
+plt.plot(covid_window.index, covid_window['vol_10d'], label='10-day', linewidth=1)
+plt.plot(covid_window.index, covid_window['vol_20d'], label='20-day', linewidth=1)
+plt.plot(covid_window.index, covid_window['vol_60d'], label='60-day', linewidth=1.5)
+plt.axhline(y=baseline_vol, color='black', linestyle='--', linewidth=1, label=f'Pre-COVID unconditional vol ({baseline_vol:.2f}%)')
+plt.title('Rolling Volatility Around COVID-19 Crash')
+plt.ylabel('Percentage Volatility')
+plt.xlabel('Date')
+plt.legend()
 plt.tight_layout()
 plt.show()
