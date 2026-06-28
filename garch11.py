@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 from arch import arch_model
 import warnings
+from statsmodels.stats.diagnostic import acorr_ljungbox
 
 warnings.filterwarnings('ignore')
 
@@ -55,6 +56,10 @@ nifty['cond_vol'] = np.nan
 nifty.loc[cond_vol.index, 'cond_vol'] = cond_vol
 
 nifty['20_rolling_SD'] = nifty['log_returns'].rolling(20).std()
+
+standardised_resid = res.resid / cond_vol
+lb_test = acorr_ljungbox(standardised_resid, lags = 10, return_df=True)
+print(lb_test)
 
 fig, axes = plt.subplots(2, 1, figsize=(14, 9), sharex=True)
 
