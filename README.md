@@ -58,3 +58,21 @@ Then, a Ljung-Box test is conducted on the standardized residuals (lags 1-10) to
 | 10 | 20.26 | 0.0269 |
 
 At almost all lags the p-values obtained fall below 0.05. Due to p values being < 0.05 the null hypothesis of no autocorrelation is rejected. This means that the GARCH (1,1) fit fails to fully capture volatility clustering, with the leftover autocorrelation being detected by the Ljung-Box test. However, the probable explanation here is the leverage effect. A negative shock influences volatility more than a positive shock and since a GARCH (1,1) model is fitted symmetrically it can not capture the leverage effect. This calls for the usage of the GJR-GARCH model. The specified model reacts differently to negative and positive shocks effectively capturing the leverage effect in volatility clustering.
+
+## Limitations:
+1. The plain GARCH (1,1) model assumes that shock is symmetric. This means that positive shock and negative shock are assumed to produce the same volatility clustering effects. However this is not actually true, due to the leverage effect. Negative shocks are known to cause higher uncertainty in investors, subsequently triggering sell-offs and an increase in trading activity. On the contrary a positive shock causes a smaller rise in trading activity and therefore, volatility. This can be observed first-hand since the Ljung-Box test null-hypothesis of no autocorrelation was rejected in the diagnostics which means the model failed to completely capture the volatility clustering.
+
+2. Secondly, the calculated standardized residuals (Z_t) are assumed to follow a normal distribution. However, in reality financial returns are known for displaying fat tails. Fat tails in this context mean that extreme moves happen more frequently than a normal distribution would predict. This model underestimates the probability of these extreme volatility events and hence tail risk is underestimated.
+
+3. This model does not incorporate the effect of exogenous variables i.e. market sentiment (VIX), crude oil prices, INR/USD exchange rates etc. on price and volatility of the index. The future volatility of this index is being studied only on the basis of past volatility and price and no other variables, which may reduce accuracy in prediction results.
+
+4. Over the 11 year period, parameters such as alpha, omega, and beta are assumed to remain constant. However this introduces inaccuracies as the model assumes that the relationship betweeen past shocks/volatility and future volatility remains constant. This is not the case however due to shifting market regimes and dynamics. Notably, the COVID-19 period is known to have caused record levels of volatility. Even though in the scope of this study it is not tested whether these parameters would hold across regimes, it is a well documented phenomenon in broader literature. Regime switching specifications could be passed to the model in order to improve predictions.
+
+## Tools
+- Python
+- 'yfinance' for data download
+- 'arch' library for model fitting
+- 'statsmodels' for the Ljung-Box test
+- 'pandas' and 'numpy' for dataframe creation and calculations
+- 'matplotlib' plots generated
+   
