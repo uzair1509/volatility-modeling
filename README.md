@@ -7,8 +7,15 @@
 ## Data and Methodology
   As stated and explained in the [GARCH (1,1) repository](https://github.com/uzair1509/GARCH_1_1), logarithmic returns are calculated from NIFTY 50 close prices of the past 11 years (2015-2026) for their time additivity effects. First, a plain GARCH(1,1) model is fit to act as control. Then three GJR GARCH models are fit on the log returns with Alpha, Beta, and Gamma lags being set at 1 and standardized residuals assumed to follow Student's t-distribution in one model, skewed-t distribution in the second model, and normal distribution in the last model. 
   
-  The Alpha, Beta, and Gamma values are calculated for all the GJR models and shock persistence is calculated. Using the persistence values the shock half life is calculated for the models. Moreoever, utilizing the conditional volatility of the models, standardized residuals are calculated using the formula: 
+  The Alpha, Beta, and Gamma values are calculated for all the GJR models and shock persistence is calculated. Using the persistence values the shock half life is calculated for the models. The GJR persistence formula differs here with Gamma being a contributor to persistence:
+  $$\text{Persistence} = \alpha + \beta + \frac{\gamma}{2}$$
+
+The Gamma term is divided by 2 here based on the assumption that negative and positive shocks in the market have the same occurrence probability. Since we assume half the days do not have a negative shock this means that on half of the dayss the gamma coefficient is zero (only 1 when shock is negative) hence Gamma's contribution is roughly half its value in the persistence formula.
+  
+  Moreoever, utilizing the conditional volatility of the models, standardized residuals are calculated using the formula: 
+  
   $$z_t = \frac{\varepsilon_t}{\sigma_t}$$
   ```
 standardised residuals = residuals / conditional volatility
   ```
+  Once standardised residuals are calculated the Ljung-Box test can now be carried out using squared standardised residuals and the ARCH LM test using standardised residuals to allow for valid comparison between the models. Moreover, AIC and BIC are calculated for all models to compare goodness of fit, following the same procedure as the [GARCH (1,1) repository](https://github.com/uzair1509/GARCH_1_1).
