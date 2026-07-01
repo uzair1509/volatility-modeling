@@ -8,7 +8,7 @@
   As stated and explained in the [GARCH (1,1) repository](https://github.com/uzair1509/GARCH_1_1), logarithmic returns are calculated from NIFTY 50 close prices of the past 11 years (2015-2026) for their time additivity effects. First, a plain GARCH(1,1) model is fit to act as control. Then three GJR GARCH models are fit on the log returns with Alpha, Beta, and Gamma lags being set at 1 and standardized residuals assumed to follow Student's t-distribution in one model, skewed-t distribution in the second model, and normal distribution in the last model. 
   
   The Alpha, Beta, and Gamma values are calculated for all the GJR models and shock persistence is calculated. Using the persistence values the shock half life is calculated for the models. Moreoever, utilizing the conditional volatility of the models, standardized residuals are calculated using the formula: 
-  ```
   $$z_t = \frac{\varepsilon_t}{\sigma_t}$$
+  ```
 standardised residuals = residuals / conditional volatility
   ```
