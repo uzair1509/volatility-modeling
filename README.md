@@ -38,16 +38,18 @@ standardised residuals = residuals / conditional volatility
 | GJR-normal | 0.106 | 0.068 |
 | GJR-t | 0.013 |
 
-| Lag | LB stat | p-value |
-|---|---|---|
-| 1 | 8.96 | 0.0028 |
-| 2 | 9.02 | 0.0110 |
-| 3 | 9.22 | 0.0265 |
-| 4 | 9.27 | 0.0547 |
-| 5 | 10.64 | 0.0589 |
-| 6 | 15.05 | 0.0199 |
-| 7 | 15.15 | 0.0342 |
-| 8 | 19.47 | 0.0125 |
-| 9 | 19.84 | 0.0189 |
-| 10 | 20.26 | 0.0269 |
+  Printed Gamma p-values are all <0.001 in every GJR model's case (3.6e-4 for normal, 7.7e-7 for t, 1.5e-7 for skewed-t). Since all Gamma values are statistically significant, the presence of the leverage effect is confirmed. Furthermore, since Gamma is significant in all GJR models, evidently, no matter what residual distribution is modeled, the leverage effect exists. 
+
+  Point to be noted here is that as Gamma is added to the variance equation half-life falls from roughly 29 days to roughly 17 days. This signals that half of the long-term modeled shock memory is acutally asymmetry which is not considered by the GARCH (1,1) specification. Lastly shock persistence remains similar amongst all estimates.
+
+  By AIC and BIC criteria, the best ranked model by likelihood is the GJR GARCH with residuals modeled with a skewed-t distribution while the GJR model with a student's t distribution is ranekd second best by the aforementioned criteria. These results are expected as heavier tail distributions are known to improve likelihood estimations. Hence no surprising result is yielded.
+
+  On the contrary, both GJR models modeled on a fat-tailed residual distribution both have an alpha of almost zero with the normal distribution GJR being the only GJR that has an interior alpha value. This happens as the optimizer in the rest of the two GJR models forces respective alphas to their closest non-zero valeus (non-negativity constraint) above the unconstrained optimum. Since the skewed-t and student's t distributions assign higher probability to extreme realizations/events. Here are the eta and lambda values for the skew-t distributed GJR along with their significance:
+
+  |Distribution|Parameter|Value|P-Value|
+  |-----|-----|-----|-----|
+  |Skewed-T|Eta|7.366|4.88e-13|
+  |Skewed-T|Lambda|-0.149|6.37e-07|
+  |Student's T|Eta|6.940|6.128e-14|
+
   
