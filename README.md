@@ -61,3 +61,15 @@ standardised residuals = residuals / conditional volatility
   1. The Alpha parameter obtained here is interior and not boundary defined hence the volatilty equation is not reliant on a boundary constrained parameter.
   2. The model has considerably lower AIC/BIC values than the control and better residual diagnostics results as compared to the fat-tailed variants which introduce instability.
   3. Gamma obtained is significant which means that that the model is successful at capturing the leverage effect.
+
+
+## Limitations
+1. GJR-normal residual diagnostics pass by a narrow margin. The p-values obtained for the LB test and the ARCH LM test, even thugh they are greater than 0.05 are still lower than the p-values obtained for the control, hence some remaining autocorrelation still exists failed to be captured by the model.
+
+2. GJR variants are rejected in this scenario even though they have lower AIC/BIC values due to boundary alpha values seen which can affect calculated variance and reduce accuracy. This shows that models can not be ranked only based on AIC/BIC as likelihood selection criteria can qualify numerically inaccurate models only on the basis of better fit. Hence, as seen above, in certain scenarios distributional flexibility may result in a compromise of variance parameters in explanatory power.
+
+3. Over the 11-year period exogenous variables and regimes are assumed constant which is a likely cause of the ARCH effects not being fully captured and accounted for in the data.
+
+4. The persistence formula for the GJR models assumes symmetry in the context of occurence of negative and positive innovations which is statistically inaccurate as either innovation may weight out the other. The Lambda value obtained for the Skewed-t GJR model is statistically significant with a value of -0.149 which suggests that negative innovations are more probable than positive innovations. Hence Gamma contribution to persistance is slightly above than the assumed value of γ/2.
+
+5. Out-of-Sample valdiation is yet to be carried out for this model, hence forecasting accuracy remains untested as of now.
