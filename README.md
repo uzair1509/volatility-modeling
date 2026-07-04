@@ -55,21 +55,30 @@ standardised residuals = residuals / conditional volatility
   Since both Eta values and the Lambda value prove significant this confirms that the data obtained has fat tails and is negatively skewed. The distributional assumption of GJR models automatically assumes that extreme realized returns are more probable than what the plain GARCH model initially assumes hence fat-tail shock behavior that is otherwise to be captured by alpha in the variance equation is being absorbed by the GJR models.
 
   ## Conclusion
-  The GJR models rank best by AIC and BIC as expected. However residual diagnostics conducted on the GJR models show worse results than residual diagnostics of even the plain GARCH model (control). P-values obtaiend for both the Student's t and skewed-t distributed models are below 0.05 which shows there are still remaining ARCH effects in the models, even though the null-hypothesis of no autocorrelation was expected to be rejected. Since the Alpha obtained on these models is the boundary solution Alpha, the variance equation can not be expected to fully capture volatility. Hence, AIC/BIC metrics alone prove to be insufficient as selection criteria here.
+  The GJR models rank best by AIC and BIC as expected. However residual diagnostics conducted on the GJR models show worse results than residual diagnostics of even the plain GARCH model (control). P-values obtained for both the Student's t and skewed-t distributed models are below 0.05 which shows there are still remaining ARCH effects in the models, even though the null-hypothesis of no autocorrelation was expected to fail to be rejected. Since the Alpha obtained on these models is the boundary solution Alpha, the variance equation can not be expected to fully capture volatility. Hence, AIC/BIC metrics alone prove to be insufficient as selection criteria here.
   
   In light of all the metrics obtained, the **normally distributed** GJR GARCH model proves to be the best at capturing volatility due to three main causes:
-  1. The Alpha parameter obtained here is interior and not boundary defined hence the volatilty equation is not reliant on a boundary constrained parameter.
+  1. The Alpha parameter obtained here is interior and not boundary defined hence the volatility equation is not reliant on a boundary constrained parameter.
   2. The model has considerably lower AIC/BIC values than the control and better residual diagnostics results as compared to the fat-tailed variants which introduce instability.
-  3. Gamma obtained is significant which means that that the model is successful at capturing the leverage effect.
+  3. Gamma obtained is significant which means that the model is successful at capturing the leverage effect.
 
 
 ## Limitations
-1. GJR-normal residual diagnostics pass by a narrow margin. The p-values obtained for the LB test and the ARCH LM test, even thugh they are greater than 0.05 are still lower than the p-values obtained for the control, hence some remaining autocorrelation still exists failed to be captured by the model.
 
-2. GJR variants are rejected in this scenario even though they have lower AIC/BIC values due to boundary alpha values seen which can affect calculated variance and reduce accuracy. This shows that models can not be ranked only based on AIC/BIC as likelihood selection criteria can qualify numerically inaccurate models only on the basis of better fit. Hence, as seen above, in certain scenarios distributional flexibility may result in a compromise of variance parameters in explanatory power.
+1. GJR variants are rejected in this scenario even though they have lower AIC/BIC values due to boundary alpha values seen which can affect calculated variance and reduce accuracy. This shows that models can not be ranked only based on AIC/BIC as likelihood selection criteria can qualify numerically inaccurate models only on the basis of better fit. Hence, as seen above, in certain scenarios distributional flexibility may result in a compromise of variance parameters in explanatory power.
 
-3. Over the 11-year period exogenous variables and regimes are assumed constant which is a likely cause of the ARCH effects not being fully captured and accounted for in the data.
+2. Over the 11-year period economic and geopolitical regimes are assumed constant which is a likely cause of the ARCH effects not being fully captured and accounted for in the data.
 
-4. The persistence formula for the GJR models assumes symmetry in the context of occurence of negative and positive innovations which is statistically inaccurate as either innovation may weight out the other. The Lambda value obtained for the Skewed-t GJR model is statistically significant with a value of -0.149 which suggests that negative innovations are more probable than positive innovations. Hence Gamma contribution to persistance is slightly above than the assumed value of γ/2.
+3. Exogenous variables and their effect on volatility is not considered in the scope of this project hence reducing maximum predictive power and accuracy.
 
-5. Out-of-Sample valdiation is yet to be carried out for this model, hence forecasting accuracy remains untested as of now.
+4. The persistence formula for the GJR models assumes symmetry in the context of occurence of negative and positive innovations which is statistically inaccurate as either innovation may weight out the other. The Lambda value obtained for the Skewed-t GJR model is statistically significant with a value of -0.149 which suggests that negative innovations are more probable than positive innovations. Hence Gamma contribution to persistence is slightly above than the assumed value of γ/2.
+
+5. Out-of-Sample validation is yet to be carried out for this model, hence forecasting accuracy remains untested as of now.
+
+## Tools
+- Python
+- `yfinance` for data download
+- `arch` library for model fit
+- `statsmodels` for LB and ARCH LM tests
+- `pandas` and `numpy` for dataframe creation and calculations 
+- `scipy` for optimizer diagnostic inspection alpha
