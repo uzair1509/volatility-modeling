@@ -18,3 +18,34 @@ $$QLIKE = \frac{1}{T}\sum_{t=1}^{T}\left(\frac{r_t^2}{\hat{\sigma}^2_t} - \log\f
   By "rolling-window" forecasting it is meant that the training data being used for fitting the model rolls forward by one day when the variance of the next day from the selected day is calculated. The advantage of rolling-window forecasts upon fixed or expanding window forecasts is that as the window rolls forward the training data being used is relatively recent as compared to the other aforementioned methods. The rolling window size is set to be **1500** days from 2706 usable days (2707 total) as the .dropna() method removes one observation to prevent lookahead bias. This means that approximately 1200 out-of-sample forecasts can be carried out.
 
   True daily variance is an unobservable quantity and an empirical proxy is required as a substitute to evaluate forecast accuracy which in this case is squared returns. Even though the squared returns proxy introduces a good deal of noise, realized volatility can not be used due to data limitations as Yahoo Finance can only provide daily close prices and not intra-day close prices. 
+
+## Results
+  The following metrics were obtained upon the conduction of the tests:
+| Metric | GARCH(1,1) | GJR-normal | Winner |
+|---|---|---|---|
+| MSE | 3.361787 | 3.404176 | GARCH(1,1) |
+| MAE | 0.829978 | 0.827054 | GJR-normal |
+| QLIKE | 1.495490 | 1.512371 | GARCH(1,1) |
+
+  As seen, the plain GARCH model outperforms the normally distributed GJR model on 2 metrics out of 3. On the other hand the GJR-normal model outperforms the plain GARCH model by a minuscule difference in the MAE metric which is essentially a tie.
+  
+  The simple conclusion we land at is that the introduction of asymmetry, although does improve in-sample fit, does not contribute much to improving an out-of-sample fit. The [GJR Repository](https://github.com/uzair1509/GJR-GARCH) did calculate Gamma to be statistically significant which showed that leverage effect did exist in the data, however, the existence of Gamma does not directly guarantee a better out-of-sample fit. This is because at each rolling step added complexity introduces added parameter estimation error.
+
+  Since GARCH(1,1) outperforms on the Quasi-Likelihood metric, this goes to show that the simpler model is the stronger specification according to the preferred metric for out-of-sample forecasting on this set of data.
+
+## Limitations
+1. The variance proxy of squared returns being used is a noisy proxy and a better alternative would be to use realized volatility however due to dataset limitations of Yahoo Finance, RV can not be used as discussed above.
+
+2. Forecasts conducted are only a single step ahead, multi-step forecasting may display different results on the metrics.
+
+3. Results may also vary with a different train/test split than a 55/45 split.
+
+## Tools
+- Google Colab
+- Python
+- Yahoo Finance API for data download
+- ARCH library for ARCH models
+- Pandas and Numpy for data arrangement and calculations
+  
+
+   
