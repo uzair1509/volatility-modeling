@@ -2,15 +2,14 @@ import numpy as np
 import pandas as pd
 from arch import arch_model
 
-#specs to fit. each entry is the kwargs passed to arch_model
+#fit specifications
 SPECS = {
   'garch11': {'p': 1, 'q': 1, 'dist': 'normal'},
   'gjr_normal': {'p': 1, 'o': 1, 'q': 1, 'dist': 'normal'},
 }
 
+
 def rolling_forecast(returns, specs=SPECS, window=1500, verbose=True):
-  #returns: pandas Series of percent log returns
-  #walks the window forward one day at a time, refits, forecasts 1 step ahead
 
   r = returns.values
   T = len(r)
@@ -35,7 +34,7 @@ def rolling_forecast(returns, specs=SPECS, window=1500, verbose=True):
         fit = arch_model(train, vol='GARCH', mean='Constant', **kwargs).fit(disp='off')
         out[name][i] = fit.forecast(horizon=1).variance.values[-1, 0]
       except Exception:
-        #leave as nan and count it, rather than silently returning garbage
+        #count nan
         failures[name] += 1
 
   if verbose:
@@ -43,7 +42,7 @@ def rolling_forecast(returns, specs=SPECS, window=1500, verbose=True):
       if count:
         print(f'{name}: {count} of {n} fits failed')
 
-  #index by the date being forecast, so nothing can misalign later
+  #index by the date being forecast
   idx = returns.index[window:]
   df = pd.DataFrame(out, index=idx)
   df['sq_ret'] = sq_ret
