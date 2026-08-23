@@ -2,7 +2,7 @@
 name = "volmodels"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["numpy", "pandas", "arch", "matplotlib", "statsmodels", "scipy", "pytest"]
+dependencies = ["numpy", "pandas", "yfinance", "arch", "matplotlib", "statsmodels", "scipy", "pytest"]
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -10,4 +10,3 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
